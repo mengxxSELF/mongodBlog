@@ -1,0 +1,102 @@
+<%include ../include/header.html %>
+<form enctype="multipart/form-data" action="/user/reg" method="post" class="form-horizontal">
+    <div class="form-group">
+        <label  class="col-md-2 control-label" for="username">username</label>
+        <div class="col-md-10">
+            <input type="text"  class="form-control" id="username" name="username" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label  class="col-md-2 control-label" for="password">password</label>
+        <div class="col-md-10">
+            <input type="password" class="form-control" id="password" name="password"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label  class="col-md-2 control-label" for="repassword">repassword</label>
+        <div class="col-md-10">
+            <input type="password" class="form-control" id="repassword" name="repassword"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label  class="col-md-2 control-label" for="email">email</label>
+        <div class="col-md-10">
+            <input type="text" class="form-control" id="email" name="email"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label  class="col-md-2 control-label" for="avatar">avatar</label>
+        <div class="col-md-10">
+            <input type="file" accept="image/*" name="avatar" id="avatar" class="form-control"/>
+            <div class="avatarImg"></div>
+        </div>
+    </div>
+    <button class="btn btn-info" type="submit">sumbit</button>
+</form>
+
+
+
+<script>
+    /* 判断用户名是否重复注册*/
+    document.getElementById('username').onchange = function () {
+        var avatarInfos;
+        var username = document.getElementById('username').value; /* 用户名*/
+        var warning = document.querySelector('.alert-warning');/* 警告框*/
+        if(localStorage.getItem("avatarInfo")){ /* 判断本地是否存在用户信息 有就进行判断  */
+            avatarInfos = JSON.parse(localStorage.getItem("avatarInfo"));
+            avatarInfos.forEach(function (item) {
+                if(item.username==username){
+                    warning.innerText ='该用户名已经被占用,请更换用户名';
+                    warning.style.display = 'block';
+                    setTimeout(function () {
+                        warning.innerText ='';
+                        warning.style.display = 'none';
+                    },2000)
+                }
+            })
+        }
+    }
+
+    /* 图片预览 */
+    document.getElementById('avatar').onchange = function () {
+        var avatarInfos;
+        if(localStorage.getItem("avatarInfo")){ /* 判断本地是否存在用户信息 没有则设置空数组  */
+            avatarInfos = JSON.parse(localStorage.getItem("avatarInfo"));
+        }else{
+            avatarInfos = [ ];
+        }
+        var file = this.files[0];
+        var reader = new FileReader();
+        // 图像文件以Data URL形式进行读入页面
+        reader.readAsDataURL(file);
+        reader.onload = function(e){
+            /* 图片预览*/
+            document.querySelector('.avatarImg').innerHTML = '<img class="img-thumbnail" src="'+this.result+'" alt=""/>';
+           /* 用户信息本地存储*/
+            var avatar = {
+                username:document.querySelector('#username').value,
+                avatarImg: this.result
+            };
+            avatarInfos.push(avatar);
+            localStorage.setItem("avatarInfo",JSON.stringify(avatarInfos));
+        }
+    }
+
+    /*密码重复*/
+    document.getElementById('repassword').onchange= function () {
+        var password = document.getElementById('password').value;
+        var repassword = document.getElementById('repassword').value;
+        var warning = document.querySelector('.alert-warning');/* 警告框*/
+        if(repassword!=password ){
+            warning.innerText ='两次密码输入不一致，清重新输入';
+            warning.style.display = 'block';
+            setTimeout(function () {
+                warning.innerText ='';
+                warning.style.display = 'none';
+            },2000)
+        }
+    }
+
+</script>
+
+<%include ../include/footer.html %>

@@ -1,0 +1,92 @@
+<%include ../include/header.html %>
+
+<%
+articles.forEach(function(article){ %>
+<div class="media">
+    <div class="media-left media-middle">
+        <a href="/article/list?user=<%=article.user._id%>">
+            <img class="media-object" src="<%=article.user.avatar%>" alt="...">
+        </a>
+    </div>
+    <div class="media-body">
+        <h4 class="media-heading"><a href="/article/detail/<%=article._id%>"><%=article.title%></a> </h4>
+        <p><%-article.content%></p>
+        <div class="media-footer">
+            <p> <b>评论量</b> <%=article.comments.length%>  <b>author: </b> <a href="/article/list?user=<%=article.user._id%>"> <%=article.user.username %> </a>     <b>  time:</b> <%=article.createAt.toLocaleString() %>  <b>pv</b>  <%=article.pv%>    </p>
+        </div>
+    </div>
+</div>
+<% })
+%>
+
+<!--  ����  -->
+<nav>
+    <ul class="pagination">
+        <li>pageSize on eveyr page
+            <select onchange="goto(<%=NowPageNum%>)" class="form-control" name="pageSize" id="pageSize">
+                <options>
+                    <option <%=pageSize == 3?'selected':''%>  value="3">3</option>
+                    <option <%=pageSize == 5?'selected':''%>  value="5">5</option>
+                    <option <%=pageSize == 10?'selected':''%>  value="10">10</option>
+                    <option <%=pageSize == 15?'selected':''%>  value="15">15</option>
+                    <option <%=pageSize == 20?'selected':''%>  value="20">20</option>
+                </options>
+            </select>
+        </li>
+        <li>you can choose the article order by yourself
+            <select  onchange="goto(<%=NowPageNum%>)" class="form-control" name="order" id="order">
+                <options>
+                    <option <%=order == '-createAt'?'selected':''%>  value="-createAt"> down  at time  </option>
+                    <option <%=order == 'createAt'?'selected':''%> value="createAt">up at time</option>
+                    <option <%=order == '-pv'?'selected':''%>  value="-pv"> down  at pv  </option>
+                    <option <%=order == 'pv'?'selected':''%> value="pv">up at pv</option>
+                    <option <%=order == '-comments'?'selected':''%>  value="-comments"> down  at comments  </option>
+                    <option <%=order == 'comments'?'selected':''%> value="comments">up at comments</option>
+                </options>
+            </select>
+        </li>
+    </ul>
+</nav>
+
+
+
+<!--��ҳ-->
+
+<nav>
+    <ul class="pagination">
+        <li  class="<%=NowPageNum==1?'disabled':''   %>" >
+            <a  onclick="goto(<%=NowPageNum-1%>)" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <%
+        for(var i=1;i<totalPage+1;i++ ){ %>
+        <li class="<%=NowPageNum==i?'active':''%>"><a onclick="goto(<%=i%>)">  <%=i%>  </a></li>
+        <% }
+        %>
+        <li class="<%=NowPageNum==totalPage?'disabled':''   %>"  >
+            <a onclick="goto(<%= parseInt(NowPageNum)+1 %>)" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+
+
+
+
+<script>
+    /* ��ҳ */
+    function goto(pageNum){
+        var pageSize = document.querySelector('#pageSize').value;/* ÿҳ�м���*/
+        var order = document.querySelector('#order').value;/* ���� */
+        console.log( pageSize )
+        console.log( order )
+        var theUrl = '/article/list?pageNum='+pageNum+'&pageSize='+pageSize+'&order='+order;
+        window.location.href = theUrl;
+    }
+
+</script>
+
+<%include ../include/footer.html %>

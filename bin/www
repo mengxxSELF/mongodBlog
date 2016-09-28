@@ -1,0 +1,111 @@
+#!/usr/bin/env node
+
+/* 此文件需要使用node运行 */
+
+/**
+ * Module dependencies.   模块依赖
+ */
+
+var app = require('../app');  /*引入app   app是一个请求监听 处理函数 */
+
+/* 是一个日志模块 */
+var debug = require('debug')('blog:server');
+/*  */
+var http = require('http');
+
+/**
+ * Get port from environment and store in Express.
+ *
+ * 从环境变量获取端口号 保存在express内部
+ */
+
+var port = normalizePort(process.env.PORT || '3001');
+
+/* 在内部保存值 */
+app.set('port', port);
+/*
+ app.get('port') 可以获取变量 也可设置路由 express内部有处理
+*
+* */
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+/*在端口 监听客户端 请求 */
+server.listen(port);
+/* 监听错误 */
+server.on('error', onError);
+/* 监听成功后 执行回调*/
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+
+
+
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges'); /* 绑定 此端口 需要额外权限*/
+      process.exit(1);
+      break;
+    case 'EADDRINUSE': /* e add r in use  端口已被占用*/
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+/* 在函数 监听成功后执行的回调函数*/
+function onListening() {
+  console.log('port in 3001')
+  var addr = server.address(); /* 返回服务器地址*/
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}

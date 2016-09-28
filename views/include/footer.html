@@ -1,0 +1,27 @@
+
+
+
+</div>  <!--  ����container -->
+<script src="/lib/jquery/dist/jquery.min.js"></script>
+<script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+
+<script>
+    /* 发表文章*/
+    $('.inputBox').blur(function () {
+        var label = $(this).parents('.form-group').first().text();
+        if($(this).val()==''){
+            $(this).addClass('errorBox');
+            $('.alert-warning').text(label+'不得为空').show();
+        }else{
+            $(this).removeClass('errorBox');
+        }
+        setTimeout(function () {
+            $('.alert-warning').hide().text('');
+        },2000)
+    })
+</script>
+
+
+</body>
+</html>

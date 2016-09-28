@@ -1,0 +1,100 @@
+<%include ../include/header.html%>
+
+<div class="panel panel-info">
+    <div class="panel-heading"><%=article.title%>  <p class="pull-right"> <b>commnets</b> <%=article.comments.length%>   <b >page views</b> <%=article.pv%> </p>   </div>
+    <div class="panel-body"><%-article.content%></div>
+    <div class="panel-footer">
+        <button class="btn btn-info" data-toggle="modal" data-target="#myModal" >edit</button>
+        <button class="btn btn-default" data-toggle="modal" data-target=".bs-example-modal-sm" >remove</button>
+    </div>
+</div>
+
+
+<!-- �����б�-->
+
+<%
+if(article.comments&&article.comments.length>0){ %>
+<ul class="list-group">
+    <%
+    article.comments.forEach(function(comment){ %>
+    <li class="list-group-item">
+        <div class="media">
+            <div class="media-left media-middle">
+                <a href="/article/list?user=<%=comment.user._id%>">
+                    <img class="media-object" src="<%=comment.user.avatar%>" alt="...">
+                </a>
+            </div>
+            <div class="media-body">
+                <p><%- comment.content%></p>
+                <div class="media-footer">
+                    <p> <b>author: </b> <a href="/article/list?user=<%=comment.user._id%>"> <%=comment.user.username %> </a>     <b>  time:</b> <%=comment.createAt.toLocaleString() %>   </p>
+                    <a href="/article/comment/<%=article._id%>/delete/<%=comment._id%>" class="btn btn-info">delete the comment</a>
+                </div>
+            </div>
+        </div>
+    </li>
+    <% })
+    %>
+</ul>
+
+<%}
+%>
+
+
+
+<!-- �������-->
+<div class="panel panel-default">
+    <div class="panel-heading">comment</div>
+    <div class="panel-body">
+        <form action="/article/comment" method="post">
+            <input type="hidden" name="articleId" value="<%=article._id%>" />  <!--  ������id �����������ĸ����µ�-->
+            <textarea class="form-control" name="content" id="" cols="30" rows="10"></textarea>
+            <button class="btn btn-info" type="submit">send</button>
+        </form>
+    </div>
+</div>
+
+
+
+<!-- �༭���� -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="/article/edit/<%=article._id %>" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"> title
+                        <input type="text" class="form-control" name="title" value=" <%=article.title%>  "/>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                <textarea class="form-control" name="content"  cols="30" rows="10"><%- article.content %></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- ɾ�� -->
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                are you sure to delete the article?
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-info" data-dismiss="modal">no no</button>
+                <a class="btn btn-default" href="/article/delete/<%=article._id %>" >yes</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<%include ../include/footer.html%>
